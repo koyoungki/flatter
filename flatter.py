@@ -26,24 +26,24 @@ def construct_graph(path: str) -> None:
         construct_graph(header)
 
 def compute_topology() -> list[str]:
-    topology = []
+    order = []
     for header in graph:
         if indegree.get(header, 0) == 0:
-            topology.append(header)
+            order.append(header)
     for i in range(len(graph)):
-        for header in graph[topology[i]]:
+        for header in graph[order[i]]:
             indegree[header] -= 1
             if indegree[header] == 0:
-                topology.append(header)
-    return topology
+                order.append(header)
+    return order
 
 def main():
     target = sys.argv[1]
     output = sys.argv[2]
     construct_graph(target)
-    topology = compute_topology()
+    order = compute_topology()
     file = open(output, "w")
-    for header in topology:
+    for header in order:
         if header.startswith("<") and header.endswith(">"):
             file.write("#include " + header + "\n")
         else:
