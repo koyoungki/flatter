@@ -2,8 +2,8 @@ import os
 import re
 import sys
 
-contents: dict[str, set[str]] = {}
-graph: dict[str, set[str]] = {}
+contents: dict[str, list[str]] = {}
+graph: dict[str, list[str]] = {}
 indegree: dict[str, int] = {}
 
 def get_content(path: str) -> str:
@@ -23,8 +23,8 @@ def construct_graph(path: str) -> None:
 
     directory = os.path.dirname(path)
 
-    standard_headers = re.findall(r"#include *(\<.*\>)", content)
-    headers = re.findall(r"#include *\"(.*)\"", content)
+    standard_headers = re.findall(r"#include *(\<[^>]+\>)", content)
+    headers = re.findall(r"#include *\"([^\"]+)\"", content)
 
     indegree[path] = len(standard_headers) + len(headers)
 
@@ -35,11 +35,11 @@ def construct_graph(path: str) -> None:
     contents[path] = '\n'.join(raw)
 
     for header in standard_headers:
-        graph.setdefault(header, set()).add(path)
+        graph.setdefault(header, set()).append(path)
 
     for header in headers:
         header = os.path.abspath(os.path.join(directory, header))
-        graph.setdefault(header, set()).add(path)
+        graph.setdefault(header, set()).append(path)
         construct_graph(header)
 
 def compute_topology() -> list[str]:
@@ -51,7 +51,7 @@ def compute_topology() -> list[str]:
             print("Error: cycle detected in the dependency graph.")
             exit(0)
 
-        for header in graph.get(order[i], []):
+        for header in graph[order[i]]:
             indegree[header] -= 1
             if indegree[header] == 0:
                 order.append(header)
