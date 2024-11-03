@@ -35,11 +35,11 @@ def construct_graph(path: str) -> None:
     contents[path] = '\n'.join(raw)
 
     for header in standard_headers:
-        graph.setdefault(header, set()).append(path)
+        graph.setdefault(header, []).append(path)
 
     for header in headers:
         header = os.path.abspath(os.path.join(directory, header))
-        graph.setdefault(header, set()).append(path)
+        graph.setdefault(header, []).append(path)
         construct_graph(header)
 
 def compute_topology() -> list[str]:
