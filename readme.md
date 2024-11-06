@@ -8,10 +8,6 @@ Flatter is a Python script designed to calculate file dependencies in C/C++ proj
 - Maintains standard library includes (`#include <header>`) without expanding them.
 - Outputs the final flattened code in a single file.
 
-## Requirements
-
-- Python 3.13 or higher
-
 ## Usage
 
 ```bash
